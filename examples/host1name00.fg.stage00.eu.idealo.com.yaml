@@ -1,0 +1,7 @@
+---
+
+role: 'foobar'
+stage: 'somestage'
+comment: 'This is only an example hiera-file'
+contact: 'nobody@nowhere.invalid'
+kostenstelle: '9876'

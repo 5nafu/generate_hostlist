@@ -71,3 +71,6 @@ class GenerateGenders(object):
             "environment": environment,
             "location": location
         }
+
+    def get_json_from_file(self, filename):
+        pass

@@ -9,17 +9,10 @@ def parse_args():
                         help="Write to this genders file (/etc/genders)",
                         default="/etc/genders"
                         )
-    parser.add_argument("-4",
-                        "--puppet4",
-                        help="Directory of Puppet4 host list (Puppet4/hieradata/hosts)",
-                        default='Ops-Hiera/hosts',
-                        action='store',
-                        )
-    parser.add_argument("-3",
-                        "--puppet3",
-                        help="Directory of Puppet3 host list (Ops-Hiera/hosts)",
-                        default='Ops-Hiera/hosts',
-                        action='store',
+    parser.add_argument("-i",
+                        "--input",
+                        help="Directory of hiera host files. Can be added multiple times",
+                        action='append',
                         )
     verbosity_parser = parser.add_mutually_exclusive_group()
     verbosity_parser.add_argument("-v",
@@ -42,7 +35,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    genders_generator = GenerateGenders(args.verbosity, args.puppet3, args.puppet4, args.gendersfile)
+    genders_generator = GenerateGenders(args.verbosity, args.input, args.gendersfile)
 
 
 if __name__ == '__main__':

@@ -5,9 +5,8 @@ from os.path import isfile, join
 
 
 class GenerateGenders(object):
-    def __init__(self, puppet3, puppet4, gendersfile, verbosity='WARNING'):
-        self.puppet3 = puppet3
-        self.puppet4 = puppet4
+    def __init__(self, inputdirectories, gendersfile, verbosity='WARNING'):
+        self.inputdirectories = inputdirectories
         self.gendersfile = gendersfile
         self.log = self.create_logger(verbosity)
         self.hosts = {}

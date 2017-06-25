@@ -7,8 +7,7 @@ from mock import patch
 class TestGenerateGenders(unittest.TestCase):
     def setUp(self):
         self.genders_creator = GenerateGenders(
-            puppet3="foo",
-            puppet4="bar",
+            inputdirectories=["bar"],
             gendersfile="gendersfile"
         )
         self.expected_hosts = {
@@ -56,6 +55,7 @@ class TestGenerateGenders(unittest.TestCase):
             "this.is.a.directory.yaml",
             ".yaml",
         ]
+
 
     def mock_isfile(self, filename):
         if filename.endswith("this.is.a.directory.yaml"):

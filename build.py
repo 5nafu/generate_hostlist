@@ -8,7 +8,7 @@ use_plugin("python.coverage")
 
 
 name = "generate_hostlist"
-default_task = "analyze"
+default_task = ["install_dependencies", "analyze"]
 
 
 @init

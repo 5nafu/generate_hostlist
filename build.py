@@ -15,5 +15,6 @@ default_task = ["install_dependencies", "analyze"]
 def set_properties(project):
     project.build_depends_on('unittest2')
     project.build_depends_on('mock')
+    project.build_depends_on('testfixtures')
     project.depends_on('PyYAML')
     project.depends_on('logging')

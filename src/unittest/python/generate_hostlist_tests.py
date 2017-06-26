@@ -1,5 +1,8 @@
-
+import shutil
+import tempfile
+import yaml
 import unittest2 as unittest
+from os.path import join
 from generate_hostlist import GenerateGenders
 from mock import patch
 from testfixtures import log_capture
@@ -92,4 +95,64 @@ class TestGenerateGenders(unittest.TestCase):
             'generate_hostlist',
             'WARNING',
             "Could not get attributes from hostname 'foobar.invalid'. No matching config found."
+        ))
+
+
+class TestGenerateGendersWithFiles(unittest.TestCase):
+    def setUp(self):
+        self.genders_creator = GenerateGenders(
+            inputdirectories=[],
+            domainconfig={},
+            gendersfile=""
+        )
+        self.test_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
+
+    def test_get_proper_data_from_file(self):
+        data = {
+            'role': 'foobar',
+            'stage': 'somestage',
+            'comment': 'This is only an example hiera-file',
+            'contact': 'nobody@nowhere.invalid',
+            'kostenstelle': '9876',
+        }
+        filename = join(self.test_dir, 'test.yaml')
+        with open(filename, 'w') as f:
+            f.write(yaml.dump(data))
+
+        self.assertEqual(
+            self.genders_creator.get_json_from_file(filename),
+            data
+        )
+
+    @log_capture()
+    def test_get_no_data_from_incorrect_file(self, logcapture):
+        data = "role: 'Foobar"
+        filename = join(self.test_dir, 'test.yaml')
+        with open(filename, 'w') as f:
+            f.write(data)
+
+        self.assertEqual(
+            self.genders_creator.get_json_from_file(filename),
+            {}
+        )
+        logcapture.check((
+            'generate_hostlist',
+            'WARNING',
+            "Hostfile '{}' not a proper YAML-File".format(filename)
+        ))
+
+    @log_capture()
+    def test_get_proper_data_from_file(self, logcapture):
+        filename = join(self.test_dir, 'nonexistent.yaml')
+        self.assertEqual(
+            self.genders_creator.get_json_from_file(filename),
+            {}
+        )
+        logcapture.check((
+            'generate_hostlist',
+            'WARNING',
+            "Could not read host configuration: [Errno 2] No such file or directory: '{}'".format(filename)
         ))

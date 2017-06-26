@@ -1,5 +1,6 @@
 import logging
 import re
+import yaml
 from os import listdir
 from os.path import isfile, join
 
@@ -57,4 +58,12 @@ class GenerateGenders(object):
         return {}
 
     def get_json_from_file(self, filename):
-        pass
+        try:
+            with open(filename, 'r') as yamlfile:
+                return yaml.load(yamlfile)
+        except yaml.YAMLError:
+            self.warning("Hostfile '{}' not a proper YAML-File".format(filename))
+            return {}
+        except IOError as exc:
+            self.warning("Could not read host configuration: {}".format(exc))
+            return {}

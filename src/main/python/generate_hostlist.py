@@ -5,10 +5,11 @@ from os.path import isfile, join
 
 
 class GenerateGenders(object):
-    def __init__(self, inputdirectories, gendersfile, verbosity='WARNING'):
+    def __init__(self, inputdirectories, gendersfile, domainconfig, verbosity='WARNING'):
         self.inputdirectories = inputdirectories
         self.gendersfile = gendersfile
         self.log = self.create_logger(verbosity)
+        self.domainconfig = domainconfig
         self.hosts = {}
 
     def create_logger(self, verbosity):
@@ -42,35 +43,16 @@ class GenerateGenders(object):
         return hostlist
 
     def get_attributes_from_hostname(self, hostname):
-        attributes = {}
-        if hostname.endswith(".ipx"):
-            attributes = self.get_ipx_attributes(hostname)
-        if hostname.endswith(".eu.idealo.com"):
-            attributes = self.get_idealocom_attributes(hostname)
-        return attributes
-
-    def get_ipx_attributes(self, hostname):
-        return {
-            'domain': 'ipx',
-            'hostnamegroup': re.match("(.*?)-?\d+.ipx", hostname).group(1)
-        }
-
-    def get_idealocom_attributes(self, hostname):
-        # host1-name-80.fg00.stage00.eu.idealo.com
-        regex = "(.*?)-?\d*\.([^.]*?)(\d*)\.([^.]*?)(\d*).eu.idealo.com"
-        re_match = re.match(regex, hostname)
-        hostnamegroup = re_match.group(1) or None
-        functiongroup = re_match.group(2) or None
-        segment = re_match.group(3) or None
-        environment = re_match.group(4) or None
-        location = re_match.group(5) or None
-        return {
-            "hostnamegroup": hostnamegroup,
-            "functiongroup": functiongroup,
-            "segment": segment,
-            "environment": environment,
-            "location": location
-        }
+        for domain in self.domainconfig.keys():
+            if hostname.endswith(domain):
+                try:
+                    return re.match(self.domainconfig[domain], hostname).groupdict()
+                except AttributeError:
+                    self.warning("Hostname '{}' does not match the Regex '{}'".format(
+                        hostname,
+                        self.domainconfig[domain]
+                    ))
+        self.warning("Could not get attributes from hostname '{}'. No matching config found.".format(hostname))
 
     def get_json_from_file(self, filename):
         pass

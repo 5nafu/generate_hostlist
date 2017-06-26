@@ -8,54 +8,27 @@ class TestGenerateGenders(unittest.TestCase):
     def setUp(self):
         self.genders_creator = GenerateGenders(
             inputdirectories=["bar"],
+            domainconfig={
+                'domain': '^(?P<hostgroup>.*?)-?\d*\.(?P<domain>[^.]*)$',
+                'test': '^(?P<hostgroup>.*?)-?\d*\.(?P<subdomain>[^.]*)\.(?P<domain>[^.]*)$'
+            },
             gendersfile="gendersfile"
         )
         self.expected_hosts = {
-            "host-name-10.ipx": {"hostnamegroup": "host-name", "domain": "ipx"},
-            "hostname-20.ipx": {"hostnamegroup": "hostname", "domain": "ipx"},
-            "host1name-30.ipx": {"hostnamegroup": "host1name", "domain": "ipx"},
-            "hostname40.ipx": {"hostnamegroup": "hostname", "domain": "ipx"},
-            "hostname-50.fg.stage00.eu.idealo.com": {
-                "hostnamegroup": "hostname",
-                "functiongroup": "fg",
-                "segment": None,
-                "environment": "stage",
-                "location": "00"
+            "host-name-10.domain": {
+                "hostgroup": "host-name",
+                "domain": "domain"
             },
-            "host-name-60.fg00.stage00.eu.idealo.com": {
-                "hostnamegroup": "host-name",
-                "functiongroup": "fg",
-                "segment": "00",
-                "environment": "stage",
-                "location": "00"
-            },
-            "hostname-70.fg00.stage00.eu.idealo.com": {
-                "hostnamegroup": "hostname",
-                "functiongroup": "fg",
-                "segment": "00",
-                "environment": "stage",
-                "location": "00"
-            },
-            "hostname.fg00.stage00.eu.idealo.com": {
-                "hostnamegroup": "hostname",
-                "functiongroup": "fg",
-                "segment": "00",
-                "environment": "stage",
-                "location": "00"
-            },
-            "host1-name-80.fg00.stage00.eu.idealo.com": {
-                "hostnamegroup": "host1-name",
-                "functiongroup": "fg",
-                "segment": "00",
-                "environment": "stage",
-                "location": "00"
+            "hostname-20.testsub.test": {
+                "hostgroup": "hostname",
+                'subdomain': "testsub",
+                "domain": "test"
             },
         }
         self.added_filelist = [
             "this.is.a.directory.yaml",
             ".yaml",
         ]
-
 
     def mock_isfile(self, filename):
         if filename.endswith("this.is.a.directory.yaml"):

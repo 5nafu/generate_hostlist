@@ -52,7 +52,9 @@ class GenerateGenders(object):
                         hostname,
                         self.domainconfig[domain]
                     ))
+                    return {}
         self.warning("Could not get attributes from hostname '{}'. No matching config found.".format(hostname))
+        return {}
 
     def get_json_from_file(self, filename):
         pass

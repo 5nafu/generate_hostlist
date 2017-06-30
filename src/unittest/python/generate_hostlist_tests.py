@@ -99,6 +99,54 @@ class TestGenerateGenders(unittest.TestCase):
             "Could not get attributes from hostname 'foobar.invalid'. No matching config found."
         ))
 
+    @patch('generate_hostlist.GenerateGenders.get_attributes_from_hostname')
+    @patch('generate_hostlist.GenerateGenders.get_config_from_file')
+    def template_test_get_gender_entry(self, return_file_config, return_hostname_config, expected_entry, mock_file_config, mock_hostname_config):
+        directory = ("Mock", "/mock/direcotry/")
+        hostname = "foobar.invalid"
+        mock_file_config.return_value = return_file_config
+        mock_hostname_config.return_value = return_hostname_config
+        self.assertEqual(
+            self.genders_creator.get_gender_entry_for_host(directory, hostname),
+            expected_entry
+        )
+
+    def test_get_gender_entry(self):
+        file_config = {'foo': 'bar'}
+        hostname_config = {'truth': 42}
+        expected_entry = "foobar.invalid	source=Mock,foo=bar,truth=42"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
+    def test_get_gender_entry_empty_hostname_config(self):
+        file_config = {'foo': 'bar'}
+        hostname_config = {}
+        expected_entry = "foobar.invalid	source=Mock,foo=bar"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
+    def test_get_gender_entry_empty_file_config(self):
+        file_config = {}
+        hostname_config = {'truth': 42}
+        expected_entry = "foobar.invalid	source=Mock,truth=42"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
+    def test_get_gender_entry_both_config_empty(self):
+        file_config = {}
+        hostname_config = {}
+        expected_entry = "foobar.invalid	source=Mock"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
+    def test_get_gender_entry_duplicate_entry(self):
+        file_config = {'truth': 23}
+        hostname_config = {'truth': 42}
+        expected_entry = "foobar.invalid	source=Mock,truth=23"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
+    def test_get_gender_bad_characters(self):
+        file_config = {'foo': "Mit Leerzeichen", }
+        hostname_config = {'bar': 'komma,gleichheitszeichen=sind #böse'}
+        expected_entry = "foobar.invalid	source=Mock,foo=Mit_Leerzeichen,bar=komma_gleichheitszeichen_sind__böse"
+        self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
+
 
 class TestGenerateGendersWithFiles(unittest.TestCase):
     def setUp(self):

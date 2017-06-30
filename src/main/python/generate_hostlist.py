@@ -67,3 +67,14 @@ class GenerateGenders(object):
         except IOError as exc:
             self.warning("Could not read host configuration: {}".format(exc))
             return {}
+
+    def get_gender_entry_for_host(self, directory_info, hostname):
+        filepath = join(directory_info[1], hostname + ".yaml")
+        config = self.get_attributes_from_hostname(hostname)
+        config.update(self.get_config_from_file(filepath))
+        config_list = ["source=%s" % (directory_info[0])]
+        for (key, value) in config.items():
+            value = re.sub(r"[ #,=]", "_", str(value))
+            config_list.append('%s=%s' % (key, value))
+        config_string = ",".join(config_list)
+        return "{}	{}".format(hostname, config_string)

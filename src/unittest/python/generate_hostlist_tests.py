@@ -147,7 +147,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
         ))
 
     @log_capture()
-    def test_get_proper_data_from_file(self, logcapture):
+    def test_get_no_data_from_nonexisting_file(self, logcapture):
         filename = join(self.test_dir, 'nonexistent.yaml')
         self.assertEqual(
             self.genders_creator.get_config_from_file(filename),

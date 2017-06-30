@@ -2,3 +2,4 @@ venv
 *.pyc
 target
 .coverage
+coverage.xml

@@ -7,11 +7,12 @@ python:
   - "3.5"
   - "pypy"
 install:
-  - pip install pybuilder coveralls
+  - pip install pybuilder coveralls codecov
   - pyb -v install_dependencies
 
 script:
   - pyb -v -X verify analyze
 after_success:
   - coveralls --verbose
+  - codecov
 

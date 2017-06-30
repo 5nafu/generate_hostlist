@@ -57,7 +57,7 @@ class GenerateGenders(object):
         self.warning("Could not get attributes from hostname '{}'. No matching config found.".format(hostname))
         return {}
 
-    def get_json_from_file(self, filename):
+    def get_config_from_file(self, filename):
         try:
             with open(filename, 'r') as yamlfile:
                 return yaml.load(yamlfile)

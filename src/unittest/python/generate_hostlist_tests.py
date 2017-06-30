@@ -1,3 +1,4 @@
+# coding=utf-8
 import shutil
 import tempfile
 import yaml
@@ -6,6 +7,7 @@ from os.path import join
 from generate_hostlist import GenerateGenders
 from mock import patch
 from testfixtures import log_capture
+
 
 class TestGenerateGenders(unittest.TestCase):
     def setUp(self):
@@ -123,7 +125,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             f.write(yaml.dump(data))
 
         self.assertEqual(
-            self.genders_creator.get_json_from_file(filename),
+            self.genders_creator.get_config_from_file(filename),
             data
         )
 
@@ -135,7 +137,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             f.write(data)
 
         self.assertEqual(
-            self.genders_creator.get_json_from_file(filename),
+            self.genders_creator.get_config_from_file(filename),
             {}
         )
         logcapture.check((
@@ -148,7 +150,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
     def test_get_proper_data_from_file(self, logcapture):
         filename = join(self.test_dir, 'nonexistent.yaml')
         self.assertEqual(
-            self.genders_creator.get_json_from_file(filename),
+            self.genders_creator.get_config_from_file(filename),
             {}
         )
         logcapture.check((

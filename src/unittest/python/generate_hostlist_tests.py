@@ -114,13 +114,13 @@ class TestGenerateGenders(unittest.TestCase):
     def test_get_gender_entry(self):
         file_config = {'foo': 'bar'}
         hostname_config = {'truth': 42}
-        expected_entry = "foobar.invalid	source=Mock,foo=bar,truth=42"
+        expected_entry = "foobar.invalid	foo=bar,source=Mock,truth=42"
         self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
 
     def test_get_gender_entry_empty_hostname_config(self):
         file_config = {'foo': 'bar'}
         hostname_config = {}
-        expected_entry = "foobar.invalid	source=Mock,foo=bar"
+        expected_entry = "foobar.invalid	foo=bar,source=Mock"
         self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
 
     def test_get_gender_entry_empty_file_config(self):
@@ -144,7 +144,7 @@ class TestGenerateGenders(unittest.TestCase):
     def test_get_gender_bad_characters(self):
         file_config = {'foo': "Mit Leerzeichen", }
         hostname_config = {'bar': 'komma,gleichheitszeichen=sind #böse'}
-        expected_entry = "foobar.invalid	source=Mock,foo=Mit_Leerzeichen,bar=komma_gleichheitszeichen_sind__böse"
+        expected_entry = "foobar.invalid	bar=komma_gleichheitszeichen_sind__böse,foo=Mit_Leerzeichen,source=Mock"
         self.template_test_get_gender_entry(file_config, hostname_config, expected_entry)
 
 

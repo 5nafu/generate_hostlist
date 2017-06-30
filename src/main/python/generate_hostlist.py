@@ -76,5 +76,6 @@ class GenerateGenders(object):
         for (key, value) in config.items():
             value = re.sub(r"[ #,=]", "_", str(value))
             config_list.append('%s=%s' % (key, value))
+        config_list.sort()
         config_string = ",".join(config_list)
         return "{}	{}".format(hostname, config_string)

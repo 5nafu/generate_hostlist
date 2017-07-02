@@ -1,6 +1,6 @@
 import logging
 import re
-import yaml
+from yamlreader import yaml_load, YamlReaderError
 from os import listdir
 from os.path import isfile, join
 
@@ -59,13 +59,9 @@ class GenerateGenders(object):
 
     def get_config_from_file(self, filename):
         try:
-            with open(filename, 'r') as yamlfile:
-                return yaml.load(yamlfile)
-        except yaml.YAMLError:
-            self.warning("Hostfile '{}' not a proper YAML-File".format(filename))
-            return {}
-        except IOError as exc:
-            self.warning("Could not read host configuration: {}".format(exc))
+            return yaml_load(filename)
+        except YamlReaderError as e:
+            self.warning("Hostfile '{}' not a proper YAML-File: {}".format(filename, e))
             return {}
 
     def get_gender_entry_for_host(self, directory_info, hostname):

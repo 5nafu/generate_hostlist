@@ -2,6 +2,7 @@
 import shutil
 import tempfile
 import yaml
+import logging
 import unittest2 as unittest
 from os.path import join
 from generate_hostlist import GenerateGenders
@@ -177,7 +178,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             data
         )
 
-    @log_capture()
+    @log_capture(level=logging.WARNING)
     def test_get_no_data_from_incorrect_file(self, logcapture):
         data = "role: 'Foobar"
         filename = join(self.test_dir, 'test.yaml')
@@ -189,12 +190,16 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             {}
         )
         logcapture.check((
+            'yamlreader.yamlreader',
+            'ERROR',
+            'YAML Error: while scanning a quoted scalar\n  in "{0}", line 1, column 7\nfound unexpected end of stream\n  in "{0}", line 1, column 14'.format(filename)
+        ), (
             'generate_hostlist',
             'WARNING',
-            "Hostfile '{}' not a proper YAML-File".format(filename)
+            "Hostfile '{0}' not a proper YAML-File: YAML Error: while scanning a quoted scalar\n  in \"{0}\", line 1, column 7\nfound unexpected end of stream\n  in \"{0}\", line 1, column 14".format(filename)
         ))
 
-    @log_capture()
+    @log_capture(level=logging.WARNING)
     def test_get_no_data_from_nonexisting_file(self, logcapture):
         filename = join(self.test_dir, 'nonexistent.yaml')
         self.assertEqual(
@@ -202,7 +207,11 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             {}
         )
         logcapture.check((
+            'yamlreader.yamlreader',
+            'ERROR',
+            'No YAML data found in %s and no default data given' % filename
+        ), (
             'generate_hostlist',
             'WARNING',
-            "Could not read host configuration: [Errno 2] No such file or directory: '{}'".format(filename)
+            "Hostfile '%s' not a proper YAML-File: No YAML data found in %s" % (filename, filename)
         ))

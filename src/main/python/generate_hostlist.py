@@ -126,8 +126,8 @@ class GenerateGenders(object):
         """
         try:
             return yaml_load(filename)
-        except YamlReaderError as e:
-            self.warning("Hostfile '{}' not a proper YAML-File: {}".format(filename, e))
+        except YamlReaderError as exc:
+            self.warning("Hostfile '{}' not a proper YAML-File: {}".format(filename, exc))
             return {}
 
     def get_gender_entry_for_host(self, directory_info, hostname):

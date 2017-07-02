@@ -5,11 +5,11 @@ python:
   - "3.4"
   - "3.5"
 install:
-  - pip install pybuilder coveralls pep257
+  - pip install pybuilder coveralls pep257 flake8
   - pyb -v install_dependencies
 
 before_script:
-  - flake8 --max-line-length=99 .
+  - flake8 --max-line-length=99 src/main/
   - pep257 src/main/
 script:
   - pyb -v -X verify analyze

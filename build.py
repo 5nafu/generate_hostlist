@@ -18,3 +18,6 @@ def set_properties(project):
     project.build_depends_on('mock')
     project.build_depends_on('testfixtures')
     project.depends_on('yamlreader')
+    project.set_property('pylint_options', ['--max-line-length=99'])
+    project.set_property('flake8_break_build', True)
+    project.set_property('flake8_max_line_length', 99)

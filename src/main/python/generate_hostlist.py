@@ -79,7 +79,7 @@ class GenerateGenders(object):
             if ((isfile(join(directory, filename)) and
                  filename.endswith(".yaml") and
                  len(filename) > 5)):
-                self.log.debug("Found host '%s'" % filename[:-5])
+                self.debug("Found host '%s'" % filename[:-5])
                 hostlist.append(filename[:-5])
         return hostlist
 

@@ -8,10 +8,9 @@ install:
   - pip install pybuilder coveralls pep257 flake8
   - pyb -v install_dependencies
 
-before_script:
-  - flake8 --max-line-length=99 src/main/
-  - pep257 src/main/
 script:
   - pyb -v -X verify analyze
 after_success:
+  - flake8 --max-line-length=99 src/main/
+  - pep257 src/main/
   - coveralls

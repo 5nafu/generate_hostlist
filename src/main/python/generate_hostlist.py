@@ -36,7 +36,7 @@ class GenerateGenders(object):
 
     def __create_logger(self, verbosity):
         logger = logging.getLogger(__name__)
-        logger.setLevel(getattr(logging, verbosity))
+        logger.setLevel(getattr(logging, verbosity, 30))
         console_logger = logging.StreamHandler()
         formatter = logging.Formatter('%(levelname)s:%(message)s')
         console_logger.setFormatter(formatter)

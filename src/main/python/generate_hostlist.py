@@ -22,7 +22,8 @@ class GenerateGenders(object):
                                            WILL BE OVERWRITTEN!
         domainconfig (dict):               Directory of Domains and the corresponding regex to
                                            split the hostnames into attributes.
-        verbosity (str):                   Loglevel. Alloews Keywords: DEBUG, INFO, WARNING, CRITICAL
+        verbosity (str):                   Loglevel.
+                                           Allowed Keywords: DEBUG, INFO, WARNING, CRITICAL
                                            Default: WARNING
     """
 

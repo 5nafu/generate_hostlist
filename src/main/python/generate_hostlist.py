@@ -38,7 +38,9 @@ class GenerateGenders(object):
         self.info("Getting hosts from '%s'" % directory)
         hostlist = []
         for filename in listdir(directory):
-            if isfile(join(directory, filename)) and filename.endswith(".yaml") and len(filename) > 5:
+            if ((isfile(join(directory, filename)) and
+                 filename.endswith(".yaml") and
+                 len(filename) > 5)):
                 self.log.debug("Found host '%s'" % filename[:-5])
                 hostlist.append(filename[:-5])
         return hostlist
@@ -54,7 +56,8 @@ class GenerateGenders(object):
                         self.domainconfig[domain]
                     ))
                     return {}
-        self.warning("Could not get attributes from hostname '{}'. No matching config found.".format(hostname))
+        self.warning("Could not get attributes from hostname '{}'.".format(hostname) +
+                     " No matching config found.")
         return {}
 
     def get_config_from_file(self, filename):

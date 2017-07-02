@@ -1,5 +1,6 @@
 #! /usr/bin/env python
 import argparse
+from generate_hostlist import GenerateGenders
 
 
 def parse_args():
@@ -34,8 +35,9 @@ def parse_args():
 
 
 def main():
-    args = parse_args()
-    genders_generator = GenerateGenders(args.verbosity, args.input, args.gendersfile)
+    # args = parse_args()
+    # genders_generator = GenerateGenders(args.verbosity, args.input, args.gendersfile)
+    pass
 
 
 if __name__ == '__main__':

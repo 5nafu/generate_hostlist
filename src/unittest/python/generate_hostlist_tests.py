@@ -36,7 +36,7 @@ class TestGenerateGenders(unittest.TestCase):
             ".yaml",
         ]
 
-    def mock_isfile(self, filename):
+    def __mock_isfile(self, filename):
         if filename.endswith("this.is.a.directory.yaml"):
             return False
         return True
@@ -64,7 +64,7 @@ class TestGenerateGenders(unittest.TestCase):
     @patch('generate_hostlist.isfile')
     def test_get_all_hosts_from_directory_returns_hosts(self, isfile_mock, listdir_mock):
         listdir_mock.return_value = ["%s.yaml" % host for host in self.expected_hosts.keys()] + self.added_filelist
-        isfile_mock.side_effect = self.mock_isfile
+        isfile_mock.side_effect = self.__mock_isfile
         hostlist = self.genders_creator.get_all_hosts_from_directory("foobar")
         self.assertItemsEqual(hostlist, self.expected_hosts.keys())
 

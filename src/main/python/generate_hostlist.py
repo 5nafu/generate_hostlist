@@ -7,13 +7,14 @@ from os.path import isfile, join
 
 class GenerateGenders(object):
     def __init__(self, inputdirectories, gendersfile, domainconfig, verbosity='WARNING'):
+
         self.inputdirectories = inputdirectories
         self.gendersfile = gendersfile
-        self.log = self.create_logger(verbosity)
+        self.log = self.__create_logger(verbosity)
         self.domainconfig = domainconfig
         self.hosts = {}
 
-    def create_logger(self, verbosity):
+    def __create_logger(self, verbosity):
         logger = logging.getLogger(__name__)
         logger.setLevel(getattr(logging, verbosity))
         console_logger = logging.StreamHandler()

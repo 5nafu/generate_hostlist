@@ -8,9 +8,9 @@ The hostname is split by a configurable regex into atributes as is the data from
 
 import logging
 import re
-from yamlreader import yaml_load, YamlReaderError
 from os import listdir
 from os.path import isfile, join
+from yamlreader import yaml_load, YamlReaderError
 
 
 class GenerateGenders(object):

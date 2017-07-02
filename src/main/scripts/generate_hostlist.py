@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 import argparse
-from generate_hostlist import GenerateGenders
+# from generate_hostlist import GenerateGenders
 
 
 def parse_args():

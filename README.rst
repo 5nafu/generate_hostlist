@@ -1,6 +1,6 @@
 Generate Genders File from hieradata directories
 ------------------------------------------------
-|travis_badge| |coveralls_badge| |codecov_badge|
+|travis_badge| |coveralls_badge|
 
 Documetntation to be written. This is Work in Progress.
 
@@ -12,5 +12,3 @@ Documetntation to be written. This is Work in Progress.
     :target: https://travis-ci.org/5nafu/generate_hostlist
 .. |coveralls_badge| image:: https://coveralls.io/repos/github/5nafu/generate_hostlist/badge.svg
     :target: https://coveralls.io/github/5nafu/generate_hostlist
-.. |codecov_badge| image:: https://codecov.io/gh/5nafu/generate_hostlist/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/5nafu/generate_hostlist

@@ -5,12 +5,13 @@ python:
   - "3.4"
   - "3.5"
 install:
-  - pip install pybuilder coveralls codecov
+  - pip install pybuilder coveralls pep257
   - pyb -v install_dependencies
 
++before_script:
+  - flake8 --max-line-length=99 .
+  - pep257 src/main/
 script:
   - pyb -v -X verify analyze
 after_success:
-  - coveralls --verbose
-  - codecov
-
+  - coveralls

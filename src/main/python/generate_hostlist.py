@@ -151,3 +151,28 @@ class GenerateGenders(object):
         config_list.sort()
         config_string = ",".join(config_list)
         return "{}	{}".format(hostname, config_string)
+
+    def generate_genders_file(self):
+        """Write the genders file.
+        This method will iterate over the directory infos from self.inputdirectories,
+        get all hostsfiles and the corresponding attributes and write everything to the
+        genders file in self.gendersfile
+
+        Args:
+            None
+        Return:
+            None
+        """
+        gendersfile_content = []
+        self.debug("Writing gendersfile '%s'" % self.gendersfile)
+        for directory_info in self.inputdirectories:
+            self.debug("Iterating over hosts in '%s'" % directory_info[1])
+            for hostname in self.get_all_hosts_from_directory(directory_info[1]):
+                gendersfile_content.append(self.get_gender_entry_for_host(directory_info, hostname))
+        gendersfile_content.sort()
+        try:
+            with open(self.gendersfile, 'w') as gendersfilehandler:
+                gendersfilehandler.write("\n".join(gendersfile_content))
+        except Exception as exc:
+            self.critical("Cannot write to gendersfile '%s': %s" % (self.gendersfile, exc))
+            raise

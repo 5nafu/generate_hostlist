@@ -151,12 +151,13 @@ class TestGenerateGenders(unittest.TestCase):
 
 class TestGenerateGendersWithFiles(unittest.TestCase):
     def setUp(self):
-        self.genders_creator = GenerateGenders(
-            inputdirectories=[],
-            domainconfig={},
-            gendersfile=""
-        )
         self.test_dir = tempfile.mkdtemp()
+        self.gendersfile = join(self.test_dir, 'gendersfile')
+        self.genders_creator = GenerateGenders(
+            inputdirectories=[("TestDir", self.test_dir)],
+            domainconfig={'invalid': '(?P<hostgroup>.*?)[0-9]+\.stage(?P<stage>[0-9]*)\.invalid'},
+            gendersfile=self.gendersfile
+        )
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
@@ -167,11 +168,11 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             'stage': 'somestage',
             'comment': 'This is only an example hiera-file',
             'contact': 'nobody@nowhere.invalid',
-            'kostenstelle': '9876',
+            'kostenstelle': 9876,
         }
         filename = join(self.test_dir, 'test.yaml')
         with open(filename, 'w') as f:
-            f.write(yaml.dump(data))
+            f.write(yaml.dump(data, default_flow_style=False))
 
         self.assertEqual(
             self.genders_creator.get_config_from_file(filename),
@@ -215,3 +216,39 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             'WARNING',
             "Hostfile '%s' not a proper YAML-File: No YAML data found in %s" % (filename, filename)
         ))
+
+    @log_capture()
+    def test_generate_genders_file(self, logcapture):
+        data = {
+            'hostname01.stage02.invalid': {
+                'role': 'foobar',
+                'stage': 'somestage',
+                'comment': 'This is only an example hiera-file',
+                'contact': 'nobody@nowhere.invalid',
+                'kostenstelle': 9876,
+            },
+            'hostname02.stage01.invalid': {
+                'stage': 'production',
+                'role': 'mailserver',
+                'contact': 'tester@test.invalid',
+                'kostenstelle': 1234,
+            }
+        }
+        expected_gendersfile = [
+            "hostname01.stage02.invalid	comment=This_is_only_an_example_hiera-file,contact=nobody@nowhere.invalid,hostgroup=hostname,kostenstelle=9876,role=foobar,source=TestDir,stage=somestage",
+            "hostname01.stage02.invalid	contact=tester@test.invalid,hostgroup=hostname,kostenstelle=1234,role=mailserver,source=TestDir,stage=production"
+        ]
+        for (host, config) in data.items():
+            filename = join(self.test_dir, host + '.yaml')
+            with open(filename, 'w') as f:
+                f.write(yaml.dump(config, default_flow_style=False))
+        self.genders_creator.generate_genders_file()
+        try:
+            with open(self.gendersfile, 'r') as f:
+                gendersfile_content = f.read()
+        except IOError:
+            print(logcapture)
+            self.fail("No gendersfile written")
+        self.maxDiff = None
+        import time; time.sleep(120)
+        self.assertEqual(gendersfile_content, "\n".join(expected_gendersfile))

@@ -35,7 +35,8 @@ class GenerateGenders(object):
         self.domainconfig = domainconfig
         self.hosts = {}
 
-    def __create_logger(self, verbosity):
+    @staticmethod
+    def __create_logger(verbosity):
         logger = logging.getLogger(__name__)
         logger.setLevel(getattr(logging, verbosity, 30))
         console_logger = logging.StreamHandler()
@@ -168,7 +169,8 @@ class GenerateGenders(object):
         for directory_info in self.inputdirectories:
             self.debug("Iterating over hosts in '%s'" % directory_info[1])
             for hostname in self.get_all_hosts_from_directory(directory_info[1]):
-                gendersfile_content.append(self.get_gender_entry_for_host(directory_info, hostname))
+                gender_entry = self.get_gender_entry_for_host(directory_info, hostname)
+                gendersfile_content.append(gender_entry)
         gendersfile_content.sort()
         try:
             with open(self.gendersfile, 'w') as gendersfilehandler:

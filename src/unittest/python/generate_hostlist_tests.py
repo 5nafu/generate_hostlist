@@ -236,7 +236,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
         }
         expected_gendersfile = [
             "hostname01.stage02.invalid	comment=This_is_only_an_example_hiera-file,contact=nobody@nowhere.invalid,hostgroup=hostname,kostenstelle=9876,role=foobar,source=TestDir,stage=somestage",
-            "hostname01.stage02.invalid	contact=tester@test.invalid,hostgroup=hostname,kostenstelle=1234,role=mailserver,source=TestDir,stage=production"
+            "hostname02.stage01.invalid	contact=tester@test.invalid,hostgroup=hostname,kostenstelle=1234,role=mailserver,source=TestDir,stage=production"
         ]
         for (host, config) in data.items():
             filename = join(self.test_dir, host + '.yaml')
@@ -250,5 +250,4 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
             print(logcapture)
             self.fail("No gendersfile written")
         self.maxDiff = None
-        import time; time.sleep(120)
         self.assertEqual(gendersfile_content, "\n".join(expected_gendersfile))

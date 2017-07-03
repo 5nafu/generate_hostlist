@@ -1,9 +1,10 @@
 #! /usr/bin/env python
+"""Script to generate a gendersfile from a Puppet host list."""
 import argparse
 # from generate_hostlist import GenerateGenders
 
 
-def parse_args():
+def __parse_args():
     parser = argparse.ArgumentParser(description='Generate genders file from Puppet host list')
     parser.add_argument("-g",
                         "--gendersfile",
@@ -34,11 +35,11 @@ def parse_args():
     return parser.parse_args()
 
 
-def main():
-    # args = parse_args()
+def __main():
+    # args = __parse_args()
     # genders_generator = GenerateGenders(args.verbosity, args.input, args.gendersfile)
     pass
 
 
 if __name__ == '__main__':
-    main()
+    __main()

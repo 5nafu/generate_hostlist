@@ -155,6 +155,7 @@ class GenerateGenders(object):
 
     def generate_genders_file(self):
         """Write the genders file.
+
         This method will iterate over the directory infos from self.inputdirectories,
         get all hostsfiles and the corresponding attributes and write everything to the
         genders file in self.gendersfile

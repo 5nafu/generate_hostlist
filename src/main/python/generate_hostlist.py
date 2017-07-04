@@ -27,7 +27,12 @@ class GenerateGenders(object):
                                            Default: WARNING
     """
 
-    def __init__(self, inputdirectories, gendersfile, domainconfig, verbosity='WARNING'):
+    def __init__(self,
+                 inputdirectories,
+                 gendersfile,
+                 domainconfig,
+                 verbosity='WARNING'
+                 ):
         """See Class docstring."""
         self.inputdirectories = inputdirectories
         self.gendersfile = gendersfile
@@ -126,12 +131,12 @@ class GenerateGenders(object):
             on failure: an empty dict
         """
         try:
-            return yaml_load(filename)
+            return yaml_load(filename) or {}
         except YamlReaderError as exc:
             self.warning("Hostfile '{}' not a proper YAML-File: {}".format(filename, exc))
             return {}
 
-    def get_gender_entry_for_host(self, directory_info, hostname):
+    def get_gender_entry_for_host(self, directory_name, directory_path, hostname):
         """Return an entry for a genders file.
 
         Merges the attributes from the parsed hostname and the attributes from the hostfile.
@@ -142,16 +147,18 @@ class GenerateGenders(object):
         Returns:
             a string containing the hostname and all attributes to be used in a genders file
         """
-        filepath = join(directory_info[1], hostname + ".yaml")
+        filepath = join(directory_path, hostname + ".yaml")
+        self.info("Generating Enty for %s (from %s:%s)" % (hostname, directory_name, filepath))
         config = self.get_attributes_from_hostname(hostname)
-        config.update(self.get_config_from_file(filepath))
-        config_list = ["source=%s" % (directory_info[0])]
+        file_config = self.get_config_from_file(filepath)
+        config.update(file_config)
+        config_list = ["source=%s" % (directory_name)]
         for (key, value) in config.items():
-            value = re.sub(r"[ #,=]", "_", str(value))
+            value = re.sub(r"[ #,=]", "_", unicode(value))
             config_list.append('%s=%s' % (key, value))
         config_list.sort()
         config_string = ",".join(config_list)
-        return "{}	{}".format(hostname, config_string)
+        return u"{}	{}".format(hostname, config_string)
 
     def generate_genders_file(self):
         """Write the genders file.
@@ -167,15 +174,20 @@ class GenerateGenders(object):
         """
         gendersfile_content = []
         self.debug("Writing gendersfile '%s'" % self.gendersfile)
-        for directory_info in self.inputdirectories:
-            self.debug("Iterating over hosts in '%s'" % directory_info[1])
-            for hostname in self.get_all_hosts_from_directory(directory_info[1]):
-                gender_entry = self.get_gender_entry_for_host(directory_info, hostname)
+        for directory_name in self.inputdirectories:
+            path = self.inputdirectories[directory_name]
+            self.debug("Iterating over hosts in '%s'" % path)
+            for hostname in self.get_all_hosts_from_directory(path):
+                gender_entry = self.get_gender_entry_for_host(
+                    directory_name,
+                    path,
+                    hostname)
                 gendersfile_content.append(gender_entry)
         gendersfile_content.sort()
         try:
+            gendersfile_string = "\n".join(gendersfile_content)
             with open(self.gendersfile, 'w') as gendersfilehandler:
-                gendersfilehandler.write("\n".join(gendersfile_content))
+                gendersfilehandler.write(gendersfile_string.encode('utf-8'))
         except Exception as exc:
             self.critical("Cannot write to gendersfile '%s': %s" % (self.gendersfile, exc))
             raise

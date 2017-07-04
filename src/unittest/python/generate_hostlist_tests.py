@@ -13,7 +13,7 @@ from testfixtures import log_capture
 class TestGenerateGenders(unittest.TestCase):
     def setUp(self):
         self.genders_creator = GenerateGenders(
-            inputdirectories=["bar"],
+            inputdirectories={"bar": "/tmp/"},
             domainconfig={
                 'domain': '^(?P<hostgroup>.*?)-?\d*\.(?P<domain>[^.]*)$',
                 'test': '^(?P<hostgroup>.*?)-?\d*\.(?P<subdomain>[^.]*)\.(?P<domain>[^.]*)$'
@@ -44,7 +44,7 @@ class TestGenerateGenders(unittest.TestCase):
     @log_capture()
     def test_logging_works(self, logcapture):
         logging_genders_creator = GenerateGenders(
-            inputdirectories=[""],
+            inputdirectories={"none": None},
             domainconfig={},
             gendersfile="",
             verbosity="DEBUG"
@@ -103,12 +103,13 @@ class TestGenerateGenders(unittest.TestCase):
     @patch('generate_hostlist.GenerateGenders.get_attributes_from_hostname')
     @patch('generate_hostlist.GenerateGenders.get_config_from_file')
     def template_test_get_gender_entry(self, return_file_config, return_hostname_config, expected_entry, mock_file_config, mock_hostname_config):
-        directory = ("Mock", "/mock/direcotry/")
+        (directory_name, path) = ("Mock", "/mock/direcotry/")
         hostname = "foobar.invalid"
         mock_file_config.return_value = return_file_config
         mock_hostname_config.return_value = return_hostname_config
         self.assertEqual(
-            self.genders_creator.get_gender_entry_for_host(directory, hostname),
+            self.genders_creator.get_gender_entry_for_host(
+                directory_name, path, hostname),
             expected_entry
         )
 
@@ -154,7 +155,7 @@ class TestGenerateGendersWithFiles(unittest.TestCase):
         self.test_dir = tempfile.mkdtemp()
         self.gendersfile = join(self.test_dir, 'gendersfile')
         self.genders_creator = GenerateGenders(
-            inputdirectories=[("TestDir", self.test_dir)],
+            inputdirectories={"TestDir": self.test_dir},
             domainconfig={'invalid': '(?P<hostgroup>.*?)[0-9]+\.stage(?P<stage>[0-9]*)\.invalid'},
             gendersfile=self.gendersfile
         )
